@@ -2,16 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Barang;
 use App\Models\Role;
 use App\Models\Saldo;
 use App\Models\Transaksi;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-
-class Firstseeder extends Seeder
+class futtuhSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -26,23 +25,23 @@ class Firstseeder extends Seeder
 
         
         User::create([
-            "name" => "bank",
-            "email" => "bank@gmail.com",
-            "password" => Hash::make("bank"),
+            "name" => "ucup",
+            "email" => "ucup@gmail.com",
+            "password" => Hash::make("ucup"),
             "role_id" => $bank->id
         ]);
 
         User::create([
-            "name" => "kantin",
-            "email" => "kantin@gmail.com",
-            "password" => Hash::make("kantin"),
+            "name" => "asep",
+            "email" => "asep@gmail.com",
+            "password" => Hash::make("asep"),
             "role_id" => $canteen->id
         ]);
 
         $andi = User::create([
-            "name" => "user",
-            "email" => "user@gmail.com",
-            "password" => Hash::make("user"),
+            "name" => "andi",
+            "email" => "andi@gmail.com",
+            "password" => Hash::make("andi"),
             "role_id" => $student->id
         ]);
 

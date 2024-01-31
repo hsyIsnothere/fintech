@@ -38,19 +38,14 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
                         @auth
-                            @if (Auth::user()->role_id === 1)
-                                <li class="nav-item">
-                                    <a class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page"
-                                        href="{{ route('home') }}">Home</a>
-                                </li>
-                            @endif
-                            @if (Auth::user()->role_id === 4)
-                                <li class="nav-item">
-                                    <a class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page"
-                                        href="{{ route('home') }}">Home</a>
-                                </li>
-                            @endif
+                            
                             @if (Auth::user()->role_id === 3)
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page"
+                                        href="{{ route('home') }}">Home</a>
+                                </li>
+                            @endif
+                            @if (Auth::user()->role_id === 2)
                                 <li class="nav-item">
                                     <a class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page"
                                         href="{{ route('home') }}">Home</a>
@@ -59,6 +54,17 @@
                                     <a class="nav-link {{ $page == 'Menu' ? 'active' : '' }}"
                                         href="{{ route('menu') }}">Menu</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $page == 'Menu' ? 'active' : '' }}"
+                                        href="{{ route('data_transaksi') }}">Data Transaksi</a>
+                                </li>
+                            @endif
+                            @if (Auth::user()->role_id === 1)
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page"
+                                        href="{{ route('home') }}">Home</a>
+                                </li>
+                                
                             @endif
                         @endauth
                     </ul>

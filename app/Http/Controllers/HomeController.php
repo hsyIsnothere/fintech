@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
+use App\Models\Saldo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,9 +38,15 @@ class HomeController extends Controller
                         ->groupBy('invoice_id')
                         ->get();
 
+        $saldo = Saldo::where("user_id", Auth::user()->id)->first();
+
+                       
+
         // dd($jajan_by_invoices);
 
         return view('home', [
+    
+            "saldo" => $saldo,
             "pengajuans" => $pengajuans,
             "jajan_by_invoices" => $jajan_by_invoices,
             "pengajuan_jajans" => $pengajuan_jajans
