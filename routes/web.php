@@ -4,6 +4,8 @@ use App\Models\Barang;
 use App\Models\Saldo;
 use App\Models\Transaksi;
 use App\Models\User;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\RegistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+
+Auth::routes();
 
 Route::get('/', function () {
     return view('auth.login');
@@ -155,7 +161,7 @@ Route::get("topup/setuju/{transaksi_id}", function ($transaksi_id) {
     ]);
 
     return redirect()->back()->with("status", "Topup disetujui");
-    })->name("topup.setuju");
+})->name("topup.setuju");
 
 Route::get("topup/tolak/{transaksi_id}", function ($transaksi_id) {
     $transaksi = Transaksi::find($transaksi_id);
@@ -227,16 +233,28 @@ Route::get("jajan/tolak/{invoice_id}", function ($invoice_id) {
     return redirect()->back()->with("status", "Jajan ditolak");
 })->name("jajan.tolak");
 
-Route::post("addToCart/{id}", function (Request $request) {
-    Transaksi::create([
-        "user_id" => Auth::user()->id,
-        "barang_id" => $request->barang_id,
-        "status" => 1,
-        "jumlah" => $request->jumlah,
-        "type" => 2
-    ]);
+Route::post("addToCart/{id}", function (Request $request, $id) {
+    $barang = Barang::find($id);
 
-    return redirect()->back()->with("status", "Berhasil menambahkan barang ke keranjang");
+    // Check if there is enough stock
+    if ($barang->stock >= $request->jumlah) {
+        Transaksi::create([
+            "user_id" => Auth::user()->id,
+            "barang_id" => $request->barang_id,
+            "status" => 1,
+            "jumlah" => $request->jumlah,
+            "type" => 2
+        ]);
+
+        // Kurangi stok barang
+        $barang->update([
+            "stock" => $barang->stock - $request->jumlah
+        ]);
+
+        return redirect()->back()->with("status", "Berhasil menambahkan barang ke keranjang");
+    } else {
+        return redirect()->back()->with("status", "Stok tidak mencukupi");
+    }
 })->name("addToCart");
 
 Route::get("checkout", function () {
@@ -304,7 +322,7 @@ Route::prefix('transaksi')->group(function () {
         ]);
     })->name("transaksi");
 
-    
+
 
     Route::get('/add', function () {
         // Matches The "/admin/users" URL
@@ -325,7 +343,7 @@ Route::prefix('transaksi')->group(function () {
             return redirect()->back()->with("status", "Top Up Saldo Sedang Diproses");
         }
     })->name("transaksi.create");
-    
+
     Route::post('/tariktunai', function (Request $request) {
         if ($request->type == 1) {
             $invoice_id = "TTN_" . Auth::user()->id . now()->timestamp;
@@ -341,8 +359,6 @@ Route::prefix('transaksi')->group(function () {
             return redirect()->back()->with("status", "Tarik Tunai Sedang Diproses");
         }
     })->name("transaksi.tariktunai");
-
-    
 });
 
 
@@ -360,15 +376,14 @@ Route::prefix('data_transaksi')->group(function () {
             "details" => $details,
         ]);
     })->name("data_transaksi");
-
 });
 Route::prefix('transaksi_bank')->group(function () {
     Route::get("/", function () {
- 
+
         $transaksis = Transaksi::where('type', 1)
             ->where(function ($query) {
                 $query->where('invoice_id', 'like', 'SAL_%')
-                ->orWhere('invoice_id','like','TTN_%');
+                    ->orWhere('invoice_id', 'like', 'TTN_%');
             })
             ->get();
 
@@ -377,3 +392,38 @@ Route::prefix('transaksi_bank')->group(function () {
         ]);
     })->name("transaksi_bank");
 });
+
+Route::prefix('data_kantin')->group(function () {
+    Route::get("/", function () {
+
+        $transaksis = Transaksi::where("user_id", (Auth::user()->id))
+        ->where('type', 2)->get();
+        $details = Transaksi::where("type", 2)
+            ->get();
+
+        return view("data_kantin", [
+            "transaksis" => $transaksis,
+            "details" => $details,
+        ]);
+    })->name("data_kantin");
+});
+Route::prefix('data_bank')->group(function () {
+    Route::get("/", function () {
+
+        $transaksis = Transaksi::where("user_id", (Auth::user()->id))
+        ->where('type', 1)->get();
+        $details = Transaksi::where("type", 1)
+            ->get();
+
+        return view("data_bank", [
+            "transaksis" => $transaksis,
+            "details" => $details,
+        ]);
+    })->name("data_bank");
+});
+
+Route::delete("/delete-keranjagn/{id}", function ($id) {
+    Transaksi::find($id)->delete();
+
+    return redirect()->back()->with("status", "Berhasil Menghapus Keranjang");
+})->name("keranjang.delete");

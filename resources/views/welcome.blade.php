@@ -130,3 +130,109 @@
         </div>
     </body>
 </html>
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>CodePen - Sidebar Menu</title>
+    <link rel='stylesheet' href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css'>
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap'>
+    <link rel="stylesheet" href="{{asset('css/side.css')}}">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <nav class="sidebar close">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                    <img src="https://drive.google.com/uc?export=view&id=1ETZYgPpWbbBtpJnhi42_IR3vOwSOpR4z" alt="">
+                </span>
+
+                <div class="text logo-text">
+                    <span class="name">Stella Army </span>
+                    <span class="profession">Web developer</span>
+                </div>
+            </div>
+
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+
+                <li class="search-box">
+                    <i class='bx bx-search icon'></i>
+                    <input type="text" placeholder="Search...">
+                </li>
+                @auth
+                @if (Auth::user()->role_id === 3)
+
+                <ul class="menu-links">
+                    <li class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page">
+                        <a href="{{ route('home') }}">
+                            <i class=''></i>
+                            <span class="text nav-text">Home</span>
+                        </a>
+                    </li>
+
+
+                    <ul class="menu-links">
+                        <li class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page">
+                            <a href="{{ route('data_kantin') }}">
+                                <i class=''></i>
+                                <span class="text nav-text">RiwayatKantin</span>
+                            </a>
+                        </li>
+
+                        <ul class="menu-links">
+                            <li class="nav-link {{ $page == 'Home' ? 'active' : '' }}" aria-current="page">
+                                <a href="{{ route('data_bank') }}">
+                                    <i class=''></i>
+                                    <span class="text nav-text">RiwayatBank</span>
+                                </a>
+                            </li>
+                            @endif
+                            @endauth
+
+            </div>
+
+            <div class="bottom-content">
+                <li class="">
+                    <a href="#">
+                        <i class='bx bx-log-out icon'></i>
+                        <span class="text nav-text">Logout</span>
+                    </a>
+                </li>
+
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+
+            </div>
+        </div>
+
+    </nav>
+
+    <main class="py-4">
+        @yield('content')
+    </main>
+    <!-- partial -->
+    <script src="{{asset('js/side.js')}}"></script>
+
+</body>
+
+</html>

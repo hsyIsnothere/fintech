@@ -5,6 +5,8 @@ $page = 'Top Up';
 ?>
 
 @section('content')
+<div class="home">
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -13,9 +15,9 @@ $page = 'Top Up';
 
                     <div class="card-body">
                         @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
                         @endif
 
                         <h4>SALDO : <b>{{ $saldo->saldo }}</b></h4>
@@ -28,10 +30,12 @@ $page = 'Top Up';
                                 <input type="hidden" name="type" value="1">
                             </div>
                             <button class="btn btn-primary mt-5" type="submit">Top Up</button>
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
